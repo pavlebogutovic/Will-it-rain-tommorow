@@ -1,0 +1,239 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DataLayer.Model
+{
+    public class Car
+    {
+        public int Id { get; set; }
+        public string? Title { get; set; }
+        public int Year { get; set; }
+        public decimal Price { get; set; }
+    }
+}
+
+
+
+﻿using DataLayer.Model;
+
+namespace DataLayer
+{
+    public interface ICarRepository
+    {
+        // CREATE
+        bool Create(Car car);
+
+        // READ
+        List<Car> GetCars();
+        Car? GetById(int id);
+
+        // UPDATE
+        bool Update(Car car);
+
+        // DELETE
+        bool Delete(Car car);
+    }
+}
+
+
+
+
+﻿using DataLayer.Model;
+using System.Data.SqlClient;
+
+namespace DataLayer
+{
+    public class CarRepository : ICarRepository
+    {
+        private const string ConnectionString =
+            "Data Source=(localdb)\\ProjectModels;Initial Catalog=master;";
+
+        // ================= CREATE =================
+        public bool Create(Car car)
+        {
+            using SqlConnection sqlConnection = new SqlConnection(ConnectionString);
+            sqlConnection.Open();
+
+            SqlCommand cmd = sqlConnection.CreateCommand();
+            cmd.CommandText =
+                @"INSERT INTO Cars (Title, Year, Price)
+                  VALUES (@Title,@Year,@Price)";
+
+            cmd.Parameters.AddWithValue("@Title", car.Title);
+            cmd.Parameters.AddWithValue("@Year", car.Year);
+            cmd.Parameters.AddWithValue("@Price", car.Price);
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
+
+        // ================= READ ALL =================
+        public List<Car> GetCars()
+        {
+            List<Car> list = new List<Car>();
+
+            using SqlConnection sqlConnection = new SqlConnection(ConnectionString);
+            sqlConnection.Open();
+
+            SqlCommand sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandText = "SELECT * FROM Cars";
+
+            SqlDataReader reader = sqlCommand.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new Car
+                {
+                    Id = reader.GetInt32(0),
+                    Title = reader.GetString(1),
+                    Year = reader.GetInt32(2),
+                    Price = reader.GetDecimal(3)
+                });
+            }
+
+            return list;
+        }
+
+        // ================= READ BY ID =================
+        public Car? GetById(int id)
+        {
+            using SqlConnection sqlConnection = new SqlConnection(ConnectionString);
+            sqlConnection.Open();
+
+            SqlCommand cmd = sqlConnection.CreateCommand();
+            cmd.CommandText = "SELECT * FROM Cars WHERE Id=@Id";
+            cmd.Parameters.AddWithValue("@Id", id);
+
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+                return new Car
+                {
+                    Id = reader.GetInt32(0),
+                    Title = reader.GetString(1),
+                    Year = reader.GetInt32(2),
+                    Price = reader.GetDecimal(3)
+                };
+            }
+
+            return null;
+        }
+
+        // ================= UPDATE =================
+        public bool Update(Car car)
+        {
+            using SqlConnection sqlConnection = new SqlConnection(ConnectionString);
+            sqlConnection.Open();
+
+            SqlCommand cmd = sqlConnection.CreateCommand();
+            cmd.CommandText =
+                @"UPDATE Cars
+                  SET Title=@Title,
+                      Year=@Year,
+                      Price=@Price
+                  WHERE Id=@Id";
+
+            cmd.Parameters.AddWithValue("@Id", car.Id);
+            cmd.Parameters.AddWithValue("@Title", car.Title);
+            cmd.Parameters.AddWithValue("@Year", car.Year);
+            cmd.Parameters.AddWithValue("@Price", car.Price);
+
+            return cmd.ExecuteNonQuery() > 0;
+        }
+
+        // ================= DELETE =================
+        public bool Delete(Car car)
+        {
+            using SqlConnection sqlConnection = new SqlConnection(ConnectionString);
+            sqlConnection.Open();
+
+            SqlCommand sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandText = "DELETE FROM Cars WHERE Id=@Id";
+            sqlCommand.Parameters.AddWithValue("@Id", car.Id);
+
+            return sqlCommand.ExecuteNonQuery() > 0;
+        }
+    }
+}
+
+
+
+﻿using DataLayer.Model;
+
+namespace BusinessLayer
+{
+    public interface IBusinessCar
+    {
+        List<Car> GetCars();
+
+        string Create(Car car);
+        string Update(Car car);
+        string Delete(Car car);
+
+        Car? GetById(int id);
+    }
+}
+
+
+
+﻿using DataLayer;
+using DataLayer.Model;
+
+namespace BusinessLayer
+{
+    public class BusinessCar : IBusinessCar
+    {
+        private readonly ICarRepository carRepository;
+
+        public BusinessCar(ICarRepository carRepository)
+        {
+            this.carRepository = carRepository;
+        }
+
+        // CREATE
+        public string Create(Car car)
+        {
+            if (carRepository.Create(car))
+                return "Automobil dodat";
+
+            return "Greska pri dodavanju";
+        }
+
+        // READ ALL
+        public List<Car> GetCars()
+        {
+            var x = from item in carRepository.GetCars()
+                    orderby item.Price descending
+                    select item;
+
+            return x.ToList();
+        }
+
+        // READ BY ID
+        public Car? GetById(int id)
+        {
+            return carRepository.GetById(id);
+        }
+
+        // UPDATE
+        public string Update(Car car)
+        {
+            if (carRepository.Update(car))
+                return "Automobil izmenjen";
+
+            return "Greska pri izmeni";
+        }
+
+        // DELETE
+        public string Delete(Car car)
+        {
+            if (carRepository.Delete(car))
+                return "Automobil obrisan";
+
+            return "Greska";
+        }
+    }
+}

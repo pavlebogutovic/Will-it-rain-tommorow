@@ -1,3 +1,11 @@
+CREATE TABLE [dbo].[Books] (
+    [Id]            INT           IDENTITY (1, 1) NOT NULL,
+    [Title]         NVARCHAR (50) NOT NULL,
+    [Description]   NVARCHAR (50) NOT NULL,
+    [NumberOfPages] INT           NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

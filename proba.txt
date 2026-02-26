@@ -237,3 +237,70 @@ namespace BusinessLayer
         }
     }
 }
+
+
+
+//Otvoriš Git bash, onda uneseš:
+
+git config --global user.name "TvojeIme"
+
+
+//i ovo što je pod navodnicima samo uneseš tvoje ime, onda:
+
+git config --global user.email "tvojemail@gmail.com"
+
+
+//Napravi sada kopiju foldera u kojoj ti je projekat za svaki slučaj
+
+//E sada treba da preuzmeš repozitorijum projekta sa Githaba:
+
+cd Desktop
+
+git clone https://github.com/cacakftn/Oglasi-za-posao.git
+
+
+//Ovo će na desktop da napravi folder pod imenom Oglasi-za-posao i tu će biti svi fajlovi od projekta. Sad idi u taj folder preko terminala:
+
+cd Oglasi-za-posao
+
+
+//E sad da bi otišao do tvoje grane:
+
+git checkout imeGrane
+
+
+//i ako piše npr Switched to branch imeGrane onda je dobro. Ako piše da grana ne postoji lokalno onda pišeš:
+
+git fetch origin
+
+git checkout imeGrane
+
+
+//Tu gde je imeGrane pišeš ime svoje grane, I sad preuzmeš najnoviju verziju projekta koji je na toj grani
+
+git pull origin imeGrane
+
+
+//E sada da bi komitovao, otvori taj folder što je kreiran na desktopu i ubaci u njega sve fajlove iz projekta što si radio. Znači zameniš sve što je tu. Sad da bi proverio promene, u terminalu napiši:
+
+git status
+
+
+//i da bi dodao sve to novo:
+
+git add .
+
+
+//pravljenje komita:
+
+git commit -m "Dodao izmene u bazi i opisima poslova"
+ (pod navodnicima možeš da napišeš bilo šta)
+
+//I onda na kraju:
+
+ git push origin imeGrane
+
+
+//E sad ako ti je to prvi push preko Gita, pitaće te za username i za nekakav password koji je zapravo neki token koji preuzimaš na Githabu:
+
+Personal Access Token (create at github.com → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new → select "repo" scope → copy & paste)

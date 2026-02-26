@@ -240,6 +240,126 @@ namespace BusinessLayer
 
 
 
+
+
+
+Kloniranje projekta sa Git-a
+
+Ako imaš link repozitorijuma (GitHub / GitLab):
+
+git clone https://github.com/organizacija/projekat.git
+
+Zatim uđeš u folder:
+
+cd projekat
+
+Proveriš grane:
+
+git branch -a
+✅ 2️⃣ Kreiranje development grane iz master (ili main)
+
+Prvo se prebaciš na master:
+
+git checkout master
+
+Ako koristiš noviji naming:
+
+git checkout main
+
+Povuci najnovije izmene:
+
+git pull origin master
+
+Sada napravi novu granu:
+
+git checkout -b development
+
+Ovo znači:
+
+kreiraj novu granu
+
+prebaci se na nju
+
+Proveri:
+
+git branch
+
+Videćeš:
+
+* development
+  master
+✅ 3️⃣ Push development grane na remote
+
+Prvi put moraš da je pošalješ na server:
+
+git push -u origin development
+
+-u znači:
+postavi tracking branch (sledeći put samo git push).
+
+Sada je development grana na GitHub/GitLab-u.
+
+✅ 4️⃣ Rad na development grani
+
+Dodaješ izmene:
+
+git add .
+git commit -m "Implementiran Business Layer"
+git push
+
+Pošto si već povezao sa remote-om, samo git push radi.
+
+✅ 5️⃣ Kreiranje Merge Request / Pull Request
+🔹 Ako koristiš GitHub:
+
+Odeš na repozitorijum
+
+Pojaviće se dugme:
+👉 "Compare & pull request"
+
+Klikneš
+
+Base branch = master
+
+Compare branch = development
+
+Klikneš:
+👉 Create Pull Request
+
+🔹 Ako koristiš GitLab:
+
+Odeš na repo
+
+Klikneš:
+👉 Merge Requests
+
+Klikneš:
+👉 New Merge Request
+
+Source branch = development
+
+Target branch = master
+
+Create Merge Request
+
+✅ 6️⃣ Spajanje grana (merge)
+
+Ako si maintainer:
+
+Klikneš Merge.
+
+Ako radiš lokalno:
+
+git checkout master
+git pull origin master
+git merge development
+git push origin master
+
+
+
+
+
+
 //Otvoriš Git bash, onda uneseš:
 
 git config --global user.name "TvojeIme"
@@ -304,3 +424,8 @@ git commit -m "Dodao izmene u bazi i opisima poslova"
 //E sad ako ti je to prvi push preko Gita, pitaće te za username i za nekakav password koji je zapravo neki token koji preuzimaš na Githabu:
 
 Personal Access Token (create at github.com → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new → select "repo" scope → copy & paste)
+
+
+
+
+
